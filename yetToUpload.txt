@@ -1,3 +1,0 @@
-
-- LambdaProlog parser
-- The generated Lambda Prolog code of the typecheckers and cast insertions 
