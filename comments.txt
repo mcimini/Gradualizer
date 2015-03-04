@@ -1,0 +1,20 @@
+
+Gradualizer:
+
+> generate Ott!
+> refactoring of Rules and TypeSystems.
+> check fix
+> fix list T, doesn't work. typeOf E T match list T. no linearization!
+
+
+Execution and Proof:
+	- generation of Lambda Prolog.
+	- generation of Isabelle (with Haskabelle?)
+
+Presentation:
+	- generation of Latex
+	and in the paper we also ONLY figures from the gradualizer.
+
+It is convenient to generate LambdaProlog code + Ott or Lem. 
+
+Not lambda-calculi typesystem. Session types??
