@@ -1,3 +1,7 @@
+Soon to be done: read lambda-prolog from files and not as input strings.
+
+At the moment, the following queries have generated the repo. 
+
 fromLambdaProlog sig_stlc "typeOf (abs T1 R) (arrow T1 T2) :- (pi x\\ (typeOf x T1 => typeOf (R x) T2)). typeOf (app E1 E2) T2 :- typeOf E1 (arrow T1 T2), typeOf E2 T1."
 
 fromLambdaProlog sig_unit "typeOf (abs T1 R) (arrow T1 T2) :- (pi x\\ (typeOf x T1 => typeOf (R x) T2)). typeOf (app E1 E2) T2 :- typeOf E1 (arrow T1 T2), typeOf E2 T1. typeOf (unit) (unitType)."
