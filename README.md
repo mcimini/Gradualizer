@@ -1,1 +1,1 @@
-# Gradualizer
+# The Gradualizer
