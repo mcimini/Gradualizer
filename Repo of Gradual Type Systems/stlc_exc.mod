@@ -21,6 +21,9 @@ typeOfCI (app E1 E2) (app (cast E1' PM13 L15 (arrow T1 O16)) (cast E2' O14 L17 T
 typeOfCI (raise O19 E) (raise O19 (cast E' PM18 L20 (excType))) O19 :- typeOfCI E E' PM18, matchexcType PM18.
 typeOfCI (try E1 E2) (try (cast E1' O23 L24 JoinT) (cast E2' PM21 L25 (excTypeFun JoinT))) JoinT :- typeOfCI E1 E1' O23, typeOfCI E2 E2' PM21, matchexcTypeFun PM21 O22, join2 O23 O22 JoinT.
 
+matcharrow (arrow X1 X2) X1 X2.
+matcharrow (dyn) (dyn) (dyn).
+
 matchexcType (excType).
 matchexcType (dyn).
 
@@ -28,6 +31,7 @@ matchexcType (dyn).
 join2 X dyn X.
 join2 dyn X X.
 join2 X X X.
+join2 (arrow X1 X2) (arrow Y1 Y2) (arrow Z1 Z2) :- join2 X1 Y1 Z1, join2 X2 Y2 Z2.
 join2 (excType) (excType) (excType).
 
 consistency X1 X2 :- join2 X1 X2 JoinX.

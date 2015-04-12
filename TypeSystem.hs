@@ -1,4 +1,5 @@
 module TypeSystem where
+import Data.String.Utils
 
 data TypeEntry = Simple String
 				| Abs String String
@@ -56,7 +57,7 @@ labelPrefix = "L"
 
 
 isType :: Term -> Bool
-isType (Var variable) = ((head variable) == (head typePrefix))
+isType (Var variable) = startswith typePrefix variable
 isType (Constructor c inputsCapab outputsCapab) = (sig c "type")
 
 isOutputType :: Term -> Bool
@@ -78,6 +79,9 @@ isTermExtended term = False
 
 extendTypeSystem :: TypeSystem -> [SignatureEntry] -> [Rule] -> TypeSystem
 extendTypeSystem (Ts sig rules) newsig newrules = (Ts (sig ++ newsig) (rules ++ newrules))
+
+signatureOf :: TypeSystem -> [SignatureEntry]
+signatureOf (Ts sig rules) = sig
 
 toStringT :: Term -> String
 toStringT (Var variable) = variable

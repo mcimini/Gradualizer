@@ -63,7 +63,7 @@ castInsertionR castSummary (Rule premises term typ) = (Rule premises' (Encode te
 castInsertionPr :: CastSummary -> Premise -> Premise
 castInsertionPr castSummary premise = case premise of 
 							(Formula "typeOf" strings interms outterms) -> (Formula "typeOf" [] [(Encode (head interms) (enc (head interms)))] outterms)
-							(Hypothetical bound outterm1 interm1 interm2 outterm2) -> (Hypothetical bound outterm1 interm1 (Encode interm2 (enc interm2)) outterm2)
+							(Hypothetical bound outterm1 interm1 interm2 outterm2) -> (Hypothetical bound (Encode outterm1 outterm1) interm1 (Encode interm2 (enc interm2)) outterm2)
 							otherwise -> premise
 
 enc :: Term -> Term

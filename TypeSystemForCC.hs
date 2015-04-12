@@ -6,7 +6,7 @@ sig_cast :: [SignatureEntry]
 sig_cast = [Decl "cast" "term" [(Simple "type"), (Simple "type"), (Simple "label"), (Simple "term")]]
 
 castR :: Rule 
-castR = (Rule 		[(Formula "typeOf" [] [(Var "E")] [(Var "T1")])] 		(Constructor "cast" [] [(Var "T1"),(Var "T2"),(Var "Label"), (Var "E")]) 		(Var "T2"))
+castR = (Rule 		[(Formula "typeOf" [] [(Var "E")] [(Var "T1")])] 		(Constructor "cast" [] [(Var "E"),(Var "T1"),(Var "Label"), (Var "T2")]) 		(Var "T2"))
 
 
 

@@ -17,6 +17,9 @@ typeOfCI (abs O6 R) (abs O6 R') (arrow O6 O7) :- (pi x\ (typeOfCI x x O6 => type
 typeOfCI (app E1 E2) (app (cast E1' PM8 L10 (arrow T1 O11)) (cast E2' O9 L12 T1)) O11 :- typeOfCI E1 E1' PM8, matcharrow PM8 T1 O11, typeOfCI E2 E2' O9, consistency O9 T1.
 typeOfCI (unit) (unit) (unitType).
 
+matcharrow (arrow X1 X2) X1 X2.
+matcharrow (dyn) (dyn) (dyn).
+
 matchunitType (unitType).
 matchunitType (dyn).
 
@@ -24,6 +27,7 @@ matchunitType (dyn).
 join2 X dyn X.
 join2 dyn X X.
 join2 X X X.
+join2 (arrow X1 X2) (arrow Y1 Y2) (arrow Z1 Z2) :- join2 X1 Y1 Z1, join2 X2 Y2 Z2.
 join2 (unitType) (unitType) (unitType).
 
 consistency X1 X2 :- join2 X1 X2 JoinX.

@@ -6,6 +6,12 @@ import Data.List
 import TypeSystem
 import ToLambdaProlog
 
+
+gensymX :: IO String
+gensymX = do 
+			sym <- newUnique
+			return ("X" ++ show (hashUnique sym))
+
 dyntypeEncoding :: Term
 dyntypeEncoding = (Constructor "dyn" [] [])
 
@@ -37,12 +43,14 @@ matchesRules_Original mode (Decl c typ arguments) = let newVars = map (\n -> (Va
 												else error "ERROR: Trying to build a pattern-match rule not for a type. Probable: Filter for types of signature does not work, returned a term"
 
 matchesRules_Gradual :: String -> SignatureEntry -> String
-matchesRules_Gradual mode (Decl c typ arguments) = let dynamics = replicate (length arguments) dyntypeEncoding in
-												if typ == "typ" then (toLambdaPrologPr mode (Formula "match" [c] [dyntypeEncoding] dynamics)) ++ "."
+matchesRules_Gradual mode (Decl c typ arguments) = let dynamicsOnlyForTypes = (\x -> case x of (Simple tipo) -> if tipo == typ then dyntypeEncoding else (freshVar x)) in
+												if typ == "typ" then (toLambdaPrologPr mode (Formula "match" [c] [dyntypeEncoding] (map dynamicsOnlyForTypes arguments))) ++ "."
 												else error "ERROR: Trying to build a pattern-match rule not for a type. Probable: Filter for types of signature does not work, returned a term"
+												where
+												freshVar = \x -> (Var (unsafePerformIO gensymX))
 
 consistencyRule :: String 
-consistencyRule = "consistency X1 X2 :- join 2 X1 X2 JoinX"											
+consistencyRule = "consistency X1 X2 :- join2 X1 X2 JoinX."											
 
 joinRulesIO :: TypeSystem -> IO ()
 joinRulesIO ts = do 
@@ -50,7 +58,10 @@ joinRulesIO ts = do
 					putStrLn consistencyRule
 
 joinRules :: TypeSystem -> String 
-joinRules ts = (unlines (joinNary (neededJoins ts))) ++ (unlines (map joinForConstructors (listOfTypes ts)))
+joinRules ts = if (max > 1) then (unlines (joinNary max)) ++ (unlines (map joinForConstructors (listOfTypes ts))) else ""
+				where 
+				max = if needed < 2 then 2 else needed
+				needed = (neededJoins ts) 
 
 joinNary :: Int -> [String]
 joinNary 2 = ["join2 X " ++ lprologDynamic ++ " X.", "join2 " ++ lprologDynamic ++ " X X.", "join2 X X X."]				
@@ -67,12 +78,17 @@ joinForConstructors (Decl c typ arguments) =  conclusion ++ premises ++ "."
 									newVarsX = map (\n -> " X" ++ (show n)) [1 .. (length (arguments))]
 									newVarsY = map (\n -> " Y" ++ (show n)) [1 .. (length (arguments))]
 									newVarsZ = map (\n -> " Z" ++ (show n)) [1 .. (length (arguments))]
-									premises = if (length (arguments) > 0) then " :- " ++ intercalate ", " premisesList else ""
+									premises = if (length (premisesListOnlyTypes) > 0) then " :- " ++ intercalate ", " premisesListOnlyTypes else ""
 									premisesList = zipWith3 wrap newVarsX newVarsY newVarsZ 
 									wrap = \x -> \y -> \z -> ("join2" ++ x ++ y ++ z)
-
+									premisesListOnlyTypes = filter toRemove (zipWith onlyTypes arguments premisesList)
+									onlyTypes = \x -> \y -> case x of (Simple tipo) -> if tipo == "typ" then y else "toRemove"
+									toRemove = \x -> not (x == "toRemove")
+									
 
 neededJoins :: TypeSystem -> Int
-neededJoins ts = maximum (map arity (listOfTypes ts))
-							where arity = \x -> (case x of (Decl c typ arguments) -> (length arguments))
+neededJoins ts = if (null onlytypes) then 0 else maximum (map arity (listOfTypes ts))
+							where 
+							arity = \x -> (case x of (Decl c typ arguments) -> (length arguments))
+							onlytypes = (listOfTypes ts)
 

@@ -10,7 +10,12 @@ import TypeSystemForCC
 import CastInsertion
 import ToLambdaProlog
 import GenerateAuxiliaryPredicates
+import FromLambdaProlog
 
+
+fromLambdaProlog :: [SignatureEntry] -> String -> IO ()
+fromLambdaProlog sig stream = generateComplete (Ts sig rules)
+ 								where (Ts sig' rules) = (parseLP stream)
 
 generateComplete :: TypeSystem -> IO ()
 generateComplete ts = do 
@@ -213,9 +218,9 @@ stlc_ref = extendTypeSystem stlc sig_ref [ref, deref, assign]
 
 
 sig_exc :: [SignatureEntry]
-sig_exc = [(Decl "excType" "typ" [(Simple "typ")]),
-			(Decl "raise" "typ" [(Simple "typ"), (Simple "term")]),
-			(Decl "try" "typ" [(Simple "term"), (Simple "term")])
+sig_exc = [(Decl "excType" "typ" []),
+			(Decl "raise" "term" [(Simple "typ"), (Simple "term")]),
+			(Decl "try" "term" [(Simple "term"), (Simple "term")])
 			] 
 
 raiseR :: Rule
@@ -236,7 +241,45 @@ tryR = (Rule 	[
 stlc_exc = extendTypeSystem stlc sig_exc [raiseR, tryR]
 
 
+sig_rec :: [SignatureEntry]
+sig_rec = [(Decl "rec3Type" "typ" [(Simple "field"), (Simple "typ"), (Simple "field"), (Simple "typ"), (Simple "field"), (Simple "typ")]),
+			(Decl "rec3" "term" [(Simple "field"), (Simple "term"), (Simple "field"), (Simple "term"), (Simple "field"), (Simple "term")]),
+			(Decl "proj1" "term" [(Simple "term")]), 
+			(Decl "proj2" "term" [(Simple "term")]), 
+			(Decl "proj3" "term" [(Simple "term")])
+			] 
 
-{- Missing, to do: tuples, records -}
-{- Missing, not to do: universal, existential -}
+recR :: Rule
+recR = (Rule 	[
+				(Formula "typeOf" [] [(Var "E1")] [(Var "T1")]),
+				(Formula "typeOf" [] [(Var "E2")] [(Var "T2")]),
+				(Formula "typeOf" [] [(Var "E3")] [(Var "T3")])
+				] 
+					(Constructor "rec3" [] [(Var "F1"), (Var "E1"), (Var "F2"), (Var "E2"), (Var "F3"), (Var "E3")]) 
+					(Constructor "rec3Type" [] [(Var "F1"), (Var "T1"), (Var "F2"), (Var "T2"), (Var "F3"), (Var "T3")]))
+
+
+projrec1 :: Rule
+projrec1 = (Rule 	[
+				(Formula "typeOf" [] [(Var "E")] [(Constructor "rec3Type" [] [(Var "F"), (Var "T"), (Var "F2"), (Var "T2"), (Var "F3"), (Var "T3")])])
+				] 
+					(Constructor "proj1" [] [(Var "E"), (Var "F")]) 
+					(Var "T"))
+
+projrec2 :: Rule
+projrec2 = (Rule 	[
+				(Formula "typeOf" [] [(Var "E")] [(Constructor "rec3Type" [] [(Var "F1"), (Var "T1"), (Var "F"), (Var "T"), (Var "F3"), (Var "T3")])])
+				] 
+					(Constructor "proj2" [] [(Var "E"), (Var "F")]) 
+					(Var "T"))
+
+projrec3 :: Rule
+projrec3 = (Rule 	[
+				(Formula "typeOf" [] [(Var "E")] [(Constructor "rec3Type" [] [(Var "F1"), (Var "T1"), (Var "F2"), (Var "T2"), (Var "F"), (Var "T")])])
+				] 
+					(Constructor "proj3" [] [(Var "E"), (Var "F")]) 
+					(Var "T"))
+
+stlc_rec = extendTypeSystem stlc sig_rec [recR, projrec1, projrec2, projrec3]
+
 

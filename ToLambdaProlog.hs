@@ -72,4 +72,5 @@ toLambdaPrologPr mode (Match c typ types) = if (mode == "CI") then toLambdaProlo
 toLambdaPrologPr mode (Subtyping type1 type2) = if (mode == "CI") then toLambdaPrologPr "Gr" (Subtyping type1 type2) else "subtype" ++ mode ++ " " ++ toLambdaPrologType type1 ++ " " ++ toLambdaPrologType type2
 toLambdaPrologPr mode (Flow type1 type2) = "flow " ++ toLambdaPrologType type1 ++ " " ++ toLambdaPrologType type2
 toLambdaPrologPr mode (Join types typ) = "join" ++ (show (length types)) ++ " " ++ (intercalate " " ((map toLambdaPrologType types) ++ [toLambdaPrologType typ])) 
+
 -}

@@ -24,3 +24,8 @@ type matcharrow		typ -> typ -> typ -> o.
 type join2				typ -> typ -> typ -> o.
 type consistency		typ -> typ -> o.
 
+
+type join3				typ -> typ -> typ -> typ -> o.
+type join4				typ -> typ -> typ -> typ -> typ -> o.
+type join5				typ -> typ -> typ -> typ -> typ -> typ -> o.
+type join6				typ -> typ -> typ -> typ -> typ -> typ -> typ -> o.
