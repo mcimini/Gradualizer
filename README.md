@@ -1,3 +1,3 @@
 # The Gradualizer
 
-tool support for Gradual Typing. 
+Support tool for Gradual Typing. 
