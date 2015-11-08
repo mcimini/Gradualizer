@@ -1,7 +1,6 @@
-# The Gradualizer
-———————
-A Support tool for Gradual Typing. 
+# The Gradualizer:
+#### A Support tool for Gradual Typing. 
 
 
-# Documentation: 
+## Documentation: 
 soon 
