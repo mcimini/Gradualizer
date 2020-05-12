@@ -1,4 +1,4 @@
 # The Gradualizer: A Supporting Tool for Gradual Typing. 
 
-#### The tool is also available online at: [http://cimini.info/gradualizer](http://cimini.info/gradualizer)
+#### The tool is also available online at: [http://www.cs.uml.edu/~mcimini/gradualizer/](http://www.cs.uml.edu/~mcimini/gradualizer/)
 
